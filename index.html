@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Arena</title>
+    <style>
+      :root {
+        --bg: #08111f;
+        --panel: #101b2d;
+        --panel-alt: #132641;
+        --line: #213655;
+        --text: #edf6ff;
+        --muted: #9fb5d0;
+        --accent: #59d0ff;
+        --success: #66e6ae;
+        --warning: #ffd166;
+        --danger: #ff6b6b;
+        --shadow: rgba(0, 0, 0, 0.25);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #07111b, #0f1f35 100%);
+        color: var(--text);
+      }
+
+      .app-shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3rem);
+      }
+
+      .player-badge {
+        background: rgba(89, 208, 255, 0.14);
+        border: 1px solid rgba(89, 208, 255, 0.35);
+        color: var(--accent);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: bold;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        background: rgba(16, 27, 45, 0.9);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 18px 40px var(--shadow);
+        padding: 18px;
+      }
+
+      .card h2, .card h3 {
+        margin-top: 0;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: var(--muted);
+      }
+
+      input, select, button {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        font-size: 1rem;
+      }
+
+      input, select {
+        background: rgba(19, 38, 65, 0.9);
+        color: var(--text);
+      }
+
+      button {
+        cursor: pointer;
+        background: linear-gradient(180deg, #3ec3ff, #1da3d9);
+        color: #05131d;
+        font-weight: bold;
+        border: none;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .secondary {
+        background: linear-gradient(180deg, #294d7f, #1f3e66);
+        color: var(--text);
+      }
+
+      .danger {
+        background: linear-gradient(180deg, #ff8a8a, #f55f5f);
+        color: #2c0f14;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .room-list, .history-list, .score-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .room-item, .history-item, .score-item {
+        background: rgba(19, 38, 65, 0.9);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .room-item strong, .score-item strong { display: block; }
+
+      .room-item small, .history-item small {
+        color: var(--muted);
+      }
+
+      .question-box {
+        background: rgba(89, 208, 255, 0.08);
+        border: 1px solid rgba(89, 208, 255, 0.35);
+        border-radius: 12px;
+        min-height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 18px;
+        font-size: clamp(1.7rem, 3vw, 2.6rem);
+        font-weight: bold;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        background: rgba(102, 230, 174, 0.14);
+        color: var(--success);
+        border: 1px solid rgba(102, 230, 174, 0.3);
+      }
+
+      .leaderboard {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .leaderboard-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        border: 1px solid var(--line);
+        background: rgba(19, 38, 65, 0.9);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .rank-badge {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 209, 102, 0.15);
+        color: var(--warning);
+        font-weight: bold;
+      }
+
+      .tag {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 3px 8px;
+        background: rgba(89, 208, 255, 0.14);
+        color: var(--accent);
+        border: 1px solid rgba(89, 208, 255, 0.3);
+        font-size: 0.72rem;
+      }
+
+      @media (max-width: 760px) {
+        .row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header>
+        <h1>Math Arena</h1>
+        <div id="playerBadge" class="player-badge">Guest</div>
+      </header>
+
+      <main class="grid">
+        <section id="authCard" class="card">
+          <h2>Player Setup</h2>
+          <form id="loginForm" class="stack">
+            <div>
+              <label for="playerNameInput">Player name</label>
+              <input id="playerNameInput" maxlength="20" placeholder="Enter your name" required />
+            </div>
+            <button type="submit">Enter lobby</button>
+          </form>
+        </section>
+
+        <section id="lobbyCard" class="card">
+          <h2>Lobby</h2>
+          <div class="stack">
+            <div>
+              <label for="difficultySelect">Difficulty</label>
+              <select id="difficultySelect">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="row">
+              <button id="createRoomBtn" type="button">Create room</button>
+            </div>
+            <div class="row">
+              <input id="joinCodeInput" placeholder="Room code" maxlength="6" />
+              <button id="joinRoomBtn" class="secondary" type="button">Join room</button>
+            </div>
+            <div>
+              <h3>Open rooms</h3>
+              <ul id="roomList" class="room-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="roomCard" class="card">
+          <h2>Room</h2>
+          <div class="stack">
+            <div id="roomMeta" class="muted">No room selected</div>
+            <ul id="roomPlayersList" class="score-list"></ul>
+            <button id="startMatchBtn" type="button">Start match</button>
+          </div>
+        </section>
+
+        <section id="gameCard" class="card">
+          <h2>Match</h2>
+          <div id="matchStatus" class="pill">Waiting for a match</div>
+          <div class="question-box" id="questionBox">Waiting...</div>
+          <form id="answerForm" class="stack">
+            <div>
+              <label for="answerInput">Your answer</label>
+              <input id="answerInput" type="number" step="any" placeholder="Type answer" />
+            </div>
+            <button type="submit">Submit answer</button>
+          </form>
+          <div>
+            <h3>Scores</h3>
+            <ul id="scoreList" class="score-list"></ul>
+          </div>
+        </section>
+
+        <section id="leaderboardCard" class="card">
+          <h2>Leaderboard</h2>
+          <ol id="leaderboardList" class="leaderboard"></ol>
+        </section>
+
+        <section id="historyCard" class="card">
+          <h2>Match History</h2>
+          <ul id="historyList" class="history-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
